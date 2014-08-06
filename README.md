@@ -3,7 +3,7 @@ gaze
 
 A quick tool to track gaze over different areas of screen.
 
-*Made for assisting in our marketing research project on **study of colors on advertisements***
+*Made for assisting in our marketing research project on **study of colors in advertisements***
 
 ##Plans
 
