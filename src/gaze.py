@@ -4,12 +4,22 @@ The script creates a trace of gaze points
 """
 
 import cv2
+import numpy as np
+
+eye_cascade = cv2.CascadeClassifier("../res/haarcascade_eye.xml")
 
 vc = cv2.VideoCapture(0)
 
 ret, frame = vc.read()
 
 while ret:
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    eyes = eye_cascade.detectMultiScale(gray, 1.3, 5)
+
+    for (x, y, w, h) in eyes:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
     cv2.imshow("preview", frame)
 
     ret, frame = vc.read()
