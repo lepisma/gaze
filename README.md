@@ -1,16 +1,24 @@
 gaze
 ====
 
-Gaze tracking for content focus analysis
+A quick tool to track gaze over different areas of screen.
 
-##Working
+*Made for assisting in our marketing research project on **study of colors on advertisements***
 
-- Both eyes will be searched using HAAR based cascades.
-- Center of eyes will be searched and its relative position will be tracked.
-- After a calibration session, the system will be ready to use for estimating the focus of user on content displayed.
+##Plans
 
-**Targeted to analyse focus of people at different regions in an advertisement**
+- Searching both eyes using Haar cascades.
+- Tracking pupils in detected region of eyes.
+- Finding gaze angle using relative position of pupil's center in region of eye.
+- Calibrating system for gaze angles covering the complete screen.
+- Generating a heat map for still screen study.
+- Generating a time based gaze trace for study of attention on regions of videos.
 
-##Current state
+##Status
 
-- Scans eyes and finds pupils' center.
+- Scans eyes using Haar.
+- Finds pupil using hough circle transform.
+
+##License
+
+MIT licensed 2014
