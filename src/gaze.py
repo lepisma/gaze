@@ -19,6 +19,15 @@ while ret:
 
     for (x, y, w, h) in eyes:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        roi_gray = gray[y : y + h, x : x + w]
+        roi_color = frame[y : y + h, x : x + w]
+        
+        pupils = cv2.HoughCircles(roi_gray, cv2.cv.CV_HOUGH_GRADIENT, 1, 75, param1 = 50, param2 = 13, minRadius = 0, maxRadius = 175)
+        
+        for pupil in pupils[0, :]:
+            cv2.circle(roi_color, (pupil[0], pupil[1]), pupil[2], (0, 255, 0), 2)
+
+            cv2.circle(roi_color, (pupil[0], pupil[1]), 2, (0, 0, 255), 3)
 
     cv2.imshow("preview", frame)
 
