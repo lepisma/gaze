@@ -1,5 +1,6 @@
 """
 The main script
+The script creates a trace of gaze points
 """
 
 import cv2
