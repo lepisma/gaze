@@ -10,3 +10,7 @@ Gaze tracking for content focus analysis
 - After a calibration session, the system will be ready to use for estimating the focus of user on content displayed.
 
 **Targeted to analyse focus of people at different regions in an advertisement**
+
+##Current state
+
+- Scans eyes and finds pupils' center.
