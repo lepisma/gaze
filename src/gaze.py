@@ -17,13 +17,21 @@ while ret:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Values for scaleFactor = 1.2 and for minNeighbors = 2
-    eyes = eye_cascade.detectMultiScale(gray, 1.2, 2)
+    eyes = eye_cascade.detectMultiScale(gray, 1.2, 1)
     
     for (x, y, w, h) in eyes:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y : y + h, x : x + w]
         roi_color = frame[y : y + h, x : x + w]
+
+        # --------------------------------------------
+        # Detecting pupil using thresholding
+        #roi_gray = (255 - roi_gray)
+        #roi_gray = cv2.threshold
+
+        # --------------------------------------------
         
+        # --------------------------------------------
         # Detecting pupil using Hough circle transform
         # Have to improve this to a better technique
         # Detecting pupil only in window of the eye
@@ -34,6 +42,7 @@ while ret:
                 cv2.circle(roi_color, (pupil[0], pupil[1]), pupil[2], (0, 255, 0), 2)
 
                 cv2.circle(roi_color, (pupil[0], pupil[1]), 2, (0, 0, 255), 3)
+        # ---------------------------------------------
 
     # Print some message
     cv2.putText(frame, "Gaze vector :", (10, 30), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
@@ -52,7 +61,7 @@ cv2.destroyAllWindows()
 
 def find_gaze():
     """
-    Calculates the gaze position using the given positions of eyes and pupils
+    Calculates the gaze position using the given positions of eye and pupil
     """
 
     pass
