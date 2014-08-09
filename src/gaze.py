@@ -6,7 +6,8 @@ The script creates a trace of gaze points
 import cv2
 import numpy as np
 
-eye_cascade = cv2.CascadeClassifier("../res/haarcascade_eye.xml")
+# There are two classifiers in res folder
+eye_cascade = cv2.CascadeClassifier("../res/haarcascade_eye_tree_eyeglasses.xml")
 
 vc = cv2.VideoCapture(0)
 
