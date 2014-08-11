@@ -16,7 +16,7 @@ ret, frame = vc.read()
 while ret:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Values for scaleFactor = 1.2 and for minNeighbors = 2
+    # Values for scaleFactor = 1.2 and for minNeighbors = 1
     eyes = eye_cascade.detectMultiScale(gray, 1.2, 1)
     
     for (x, y, w, h) in eyes:
@@ -27,7 +27,10 @@ while ret:
         # --------------------------------------------
         # Detecting pupil using thresholding
         #roi_gray = (255 - roi_gray)
-        #roi_gray = cv2.threshold
+        #ret_val, roi_gray = cv2.threshold(roi_gray, 100, 255, cv2.THRESH_BINARY)
+        #contours, hierarchy = cv2.findContours(roi_gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        #cv2.drawContours(roi_color, contours, -1, (0, 255, 0), 3)
 
         # --------------------------------------------
         
@@ -59,9 +62,13 @@ while ret:
 cv2.destroyAllWindows()
 
 
-def find_gaze():
+def find_gaze(x, y, w, h, a, b):
     """
     Calculates the gaze position using the given positions of eye and pupil
+    x, y, w, h define the bounding rectangle
+    a, b define the center of pupil
     """
 
-    pass
+    center = [x + 0.5 * w, y + 0.5 * h]
+
+    return [center[0] - a, center[1] - b]
