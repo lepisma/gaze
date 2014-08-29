@@ -5,6 +5,7 @@ The script creates a trace of gaze points
 
 import cv2
 import numpy as np
+import helper
 
 # There are two classifiers in res folder
 eye_cascade = cv2.CascadeClassifier("../res/haarcascade_eye_tree_eyeglasses.xml")
@@ -41,7 +42,8 @@ while ret:
 
         # --------------------------------------------
         
-        frame[0 : h, 0 : w] = cv2.cvtColor(roi_gray, cv2.COLOR_GRAY2BGR)
+        xgrad = helper.xgrad(roi_gray)
+        frame[0 : h, 0 : w] = cv2.cvtColor(xgrad, cv2.COLOR_GRAY2BGR)
         # --------------------------------------------
         # Detecting pupil using Hough circle transform
         # Have to improve this to a better technique

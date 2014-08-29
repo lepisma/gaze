@@ -10,11 +10,11 @@ def xgrad(gray_image):
     imitating MatLab's gradient function
     """
 
-    #grad = [(gray_image[:, 1] - gray_image[:, 0]) \
-    #        (gray_image[:, 2 : -1] - gray_image[:, 0 : -3]) / 2 \
-    #        (gray_image[:, -1] - gray_image[:, -2])]
+    grad = np.column_stack(((gray_image[:, 1] - gray_image[:, 0]), \
+                            (gray_image[:, 2 :] - gray_image[:, 0 : -2]) / 2, \
+                            (gray_image[:, -1] - gray_image[:, -2])))
 
-    #return grad
+    return grad
 
 def ygrad(gray_image):
     """
@@ -22,8 +22,6 @@ def ygrad(gray_image):
     imitatin MatLab's gradient function
     """
 
-    #grad = [(gray_image[1, :] - gray_image[0, :]) \
-    #        (gray_image[2 : -1, :] - gray_image[0 : -3, :]) / 2 \
-    #        (gray_image[-1, :] - gray_image[-2, :])]
+    grad = xgrad(gray_image.T).T
 
-    #return grad
+    return grad
