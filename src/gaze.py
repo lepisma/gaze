@@ -45,6 +45,8 @@ while ret:
         sobelx = cv2.Sobel(roi_color,cv2.CV_64F,1,0,ksize=1)
         frame[0 : h, 0 : w] = sobelx
 
+        # gaussian filter
+
         #xgrad = helper.xgrad(roi_gray)
         #frame[0 : h, 0 : w] = cv2.cvtColor(xgrad, cv2.COLOR_GRAY2BGR)
         
