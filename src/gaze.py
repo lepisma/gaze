@@ -42,8 +42,12 @@ while ret:
 
         # --------------------------------------------
         
-        xgrad = helper.xgrad(roi_gray)
-        frame[0 : h, 0 : w] = cv2.cvtColor(xgrad, cv2.COLOR_GRAY2BGR)
+        sobelx = cv2.Sobel(roi_color,cv2.CV_64F,1,0,ksize=1)
+        frame[0 : h, 0 : w] = sobelx
+
+        #xgrad = helper.xgrad(roi_gray)
+        #frame[0 : h, 0 : w] = cv2.cvtColor(xgrad, cv2.COLOR_GRAY2BGR)
+        
         # --------------------------------------------
         # Detecting pupil using Hough circle transform
         # Have to improve this to a better technique
