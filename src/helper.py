@@ -46,7 +46,7 @@ def ygrad(gray_image):
 
     return grad
 
-def test_possible_center(pos, weight, grad, out_image):
+def test_possible_centers(pos, weight, grad, out_image):
     """
     Calculates the dot product between
     - Vector from all possible centers to gradient origin
@@ -82,6 +82,48 @@ def test_possible_center(pos, weight, grad, out_image):
     prod = (x_accu * grad[0]) + (y_accu * grad[1])
     prod[prod < 0] = 0
     
-    out_image = prod * prod * weight
+    out_image += prod * prod * weight
     
     return
+
+def find_center(grad_x, grad_y):
+    """
+    Finds the center of eye from given grayscale image's gradients
+
+    Parameters
+    ----------
+    grad_x : numpy.ndarray
+        Array of x gradients
+    grad_y : numpy.ndarray
+        Array of y gradients
+
+    Returns
+    -------
+    (x, y) : tuple
+        The pixel index of eye's center, relative to grad images
+    """
+
+    rows, columns = grad_x
+    out_image = np.zeros((rows, columns))
+    
+    pos_list = coords(np.arange(rows), np.arange(columns))
+    
+    x_grad = grad_x.ravel(order = 'F')
+    y_grad = grad_y.ravel(order = 'F')
+    
+    grad_list = np.column_stack((x_grad, y_grad)).to_list()
+
+    v_possible_centers = np.vectorize(test_possible_centers)
+    v_possible_centers(pos_list, 1.0, grad_list, out_image)
+
+    return np.unravel_index(out_image.argmax(), out_image.shape)
+
+def coords(*arrays):
+    """
+    Returns cartesian coordinate combinations from given arrays
+    """
+
+    grid = np.meshgrid(*arrays)
+    coord_list = [entry.ravel() for entry in grid]
+    points = np.vstack(coord_list).T
+    return points.tolist()
