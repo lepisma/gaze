@@ -20,9 +20,11 @@ def xgrad(gray_image):
         X gradient of image
     """
 
-    grad = np.column_stack(((gray_image[:, 1] - gray_image[:, 0]), \
-                            (gray_image[:, 2 :] - gray_image[:, 0 : -2]) / 2, \
-                            (gray_image[:, -1] - gray_image[:, -2])))
+    gray = np.array(gray_image, dtype = np.float32)
+
+    grad = np.column_stack(((gray[:, 1] - gray[:, 0]), \
+                            (gray[:, 2 :] - gray[:, 0 : -2]) / 2, \
+                            (gray[:, -1] - gray[:, -2])))
 
     return grad
 
@@ -46,7 +48,7 @@ def ygrad(gray_image):
 
     return grad
 
-def test_possible_centers(pos, weight, grad, out_image):
+def test_possible_centers(pos_x, pos_y, weight, grad_x, grad_y, out_image):
     """
     Calculates the dot product between
     - Vector from all possible centers to gradient origin
@@ -54,11 +56,11 @@ def test_possible_centers(pos, weight, grad, out_image):
     
     Parameters
     ----------
-    pos : tuple (x, y)
+    pos_x, pos_y : int
         Position of gradient origin
     weight : float
         Weight of gradient
-    grad : tuple (x, y)
+    grad_x, grad_y : int
         Value of gradients at pos
     out_image : numpy.ndarray
         Accumulator matrix (of same size as image) to keep track of
@@ -69,24 +71,27 @@ def test_possible_centers(pos, weight, grad, out_image):
     x_accu = np.tile(np.linspace(1, columns - 1, columns), [rows, 1])
     y_accu = np.tile(np.linspace(1, rows - 1, rows), [columns, 1]).T
     
-    x_accu = pos[0] - x_accu
-    y_accu = pos[1] - y_accu
+    x_accu = pos_x - x_accu
+    y_accu = pos_y - y_accu
     
     mag = np.sqrt((x_accu ** 2) + (y_accu ** 2))
     
     # Normalize
-    x_accu = x_accu / mag
-    y_accu = y_accu / mag
-    
+    x_accu /= mag
+    y_accu /= mag
+
+    x_accu[np.isnan(x_accu)] = 0
+    y_accu[np.isnan(y_accu)] = 0
+
     # Dot product
-    prod = (x_accu * grad[0]) + (y_accu * grad[1])
+    prod = (x_accu * grad_x) + (y_accu * grad_y)
     prod[prod < 0] = 0
-    
+
     out_image += prod * prod * weight
     
     return
 
-def find_center(grad_x, grad_y):
+def find_center(grad_x, grad_y, out_image):
     """
     Finds the center of eye from given grayscale image's gradients
 
@@ -103,20 +108,25 @@ def find_center(grad_x, grad_y):
         The pixel index of eye's center, relative to grad images
     """
 
-    rows, columns = grad_x
-    out_image = np.zeros((rows, columns))
+    rows, columns = grad_x.shape
     
-    pos_list = coords(np.arange(rows), np.arange(columns))
-    
+    #pos_list = coords(np.arange(rows), np.arange(columns))
+
+    x_pos = np.repeat(np.arange(rows), columns)
+    y_pos = np.tile(np.arange(columns), rows)
+
     x_grad = grad_x.ravel(order = 'F')
     y_grad = grad_y.ravel(order = 'F')
     
-    grad_list = np.column_stack((x_grad, y_grad)).to_list()
-
-    v_possible_centers = np.vectorize(test_possible_centers)
-    v_possible_centers(pos_list, 1.0, grad_list, out_image)
+    v_possible_centers = np.vectorize(test_possible_centers, excluded = ["out_image"])
+    v_possible_centers(x_pos, y_pos, 1.0, x_grad, y_grad, out_image = out_image)
 
     return np.unravel_index(out_image.argmax(), out_image.shape)
+    
+    #out_image /= np.max(out_image)
+    #out_image *= 255
+    
+    #return out_image
 
 def coords(*arrays):
     """

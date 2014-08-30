@@ -31,41 +31,23 @@ while ret:
         roi_color = frame[y : y + h, x : x + w]
 
         # --------------------------------------------
-        # Detecting pupil using thresholding
-        #roi_gray = (255 - roi_gray)
-        #ret_val, roi_gray = cv2.threshold(roi_gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-        #roi_gray = cv2.adaptiveThreshold(roi_gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
-        #roi_gray = cv2.erode(roi_gray, kernel, iterations = 1)
-        #contours, hierarchy = cv2.findContours(roi_gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
-        #cv2.drawContours(roi_color, contours, -1, (0, 255, 0), 3)
+        roi_gray = cv2.GaussianBlur(roi_gray, (5, 5), 0)
+
+        x_grad = helper.xgrad(roi_gray)
+        y_grad = helper.ygrad(roi_gray)
+
+        out_image = np.zeros((h, w))
+
+        pos = helper.find_center(x_grad, y_grad, out_image)
+        
+        #out_image = np.array(out_image, dtype = np.uint8)
+        #out_image = cv2.cvtColor(out_image, cv2.COLOR_GRAY2BGR)
+        
+        cv2.circle(roi_color, pos, 5, (0, 0, 255))
+        #frame[0 : h, 0 : w] = roi_color
 
         # --------------------------------------------
-        
-        sobelx = cv2.Sobel(roi_color,cv2.CV_64F,1,0,ksize=1)
-        frame[0 : h, 0 : w] = sobelx
-
-        # gaussian filter
-
-        #xgrad = helper.xgrad(roi_gray)
-        #frame[0 : h, 0 : w] = cv2.cvtColor(xgrad, cv2.COLOR_GRAY2BGR)
-        
-        # --------------------------------------------
-        # Detecting pupil using Hough circle transform
-        # Have to improve this to a better technique
-        # Detecting pupil only in window of the eye
-        # pupils = cv2.HoughCircles(roi_gray, cv2.cv.CV_HOUGH_GRADIENT, 1, 75, param1 = 50, param2 = 13, minRadius = 0, maxRadius = 0)
-        
-        # if pupils is not None:
-        #     for pupil in pupils[0, :]:
-        #         cv2.circle(roi_color, (pupil[0], pupil[1]), pupil[2], (0, 255, 0), 2)
-        
-        #         cv2.circle(roi_color, (pupil[0], pupil[1]), 2, (0, 0, 255), 3)
-        # ---------------------------------------------
-
-    # Print some message
-    #cv2.putText(frame, "Gaze vector :", (10, 30), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 0))
-    #cv2.putText(frame, "Feature not added yet", (10, 50), cv2.FONT_HERSHEY_PLAIN, 0.8, (0, 0, 255))
 
     cv2.imshow("preview", frame)
 
